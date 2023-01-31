@@ -29,8 +29,14 @@ function toChar (_, index) {
   return String.fromCharCode(CODES.A + index)
 }
 
-function toCell (_, index) {
-  return `<div class="cell" contenteditable="" data-col="${index}" ></div>`
+// function toCell (rowIndex, index) {
+//   return `<div class="cell" contenteditable="" data-col="${index}" data-row="${rowIndex}" ></div>`
+// }
+
+function toCell (rowIndex) {
+  return function (_, colIndex) {
+    return `<div class="cell" contenteditable="" data-type="cell" data-col="${colIndex}" data-id="${rowIndex}:${colIndex}" ></div>`
+  }
 }
 
 export function createTable (rowsCount = 15) {
@@ -45,12 +51,13 @@ export function createTable (rowsCount = 15) {
   
   rows.push(createRow('', cols))
   
-  for(let i = 0; i < rowsCount; i++) {
+  for(let rowIndex = 0; rowIndex < rowsCount; rowIndex++) {
     const cells = new Array(colsCount)
                     .fill('')
-                    .map(toCell)
+                    // .map((_, colIndex) => toCell(rowIndex, colIndex))
+                    .map(toCell(rowIndex))
                     .join('')
-    rows.push(createRow(i +1, cells))
+    rows.push(createRow(rowIndex + 1, cells))
   }
 
   return rows.join('')

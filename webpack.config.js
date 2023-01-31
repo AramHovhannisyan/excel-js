@@ -9,7 +9,6 @@ const isDev = !isProd
 
 const filename = ext => isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`
 
-console.log('isDev:', isDev);
 console.log('isProd:', isProd);
 
 module.exports = {
