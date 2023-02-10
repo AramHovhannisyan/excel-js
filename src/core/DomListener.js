@@ -24,7 +24,7 @@ export class DomListener {
       const methodName = getMethodName(listener);
       this.$root.off(listener, this[methodName])
 
-      console.log(listener, this[methodName]);
+      // console.log(listener, this[methodName]);
     })
   }
 }

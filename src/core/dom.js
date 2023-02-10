@@ -5,7 +5,6 @@ class Dom {
 
   html (node) {
     if (typeof node === 'string') {
-      // console.log('this.$el:', this.$el, 'node:', node);
       this.$el.innerHTML = node;
       return this;
     }
@@ -14,12 +13,15 @@ class Dom {
   }
 
   text (text) {
-    if (typeof text === 'string') {
+
+    if (typeof text !== 'undefined') {
       this.$el.textContent = text
       return this
     }
 
-    if (this.$el.tagName.toLowerCase() === 'input') return this.$el.value.trim()
+    if (this.$el.tagName.toLowerCase() === 'input') {
+      return this.$el.value.trim()
+    }
 
     return this.$el.textContent.trim()
   }
@@ -78,6 +80,22 @@ class Dom {
   removeClass (className) {
     this.$el.classList.remove(className)
     return this
+  }
+
+  getStyles (styles = []) {
+    return styles.reduce((res, el) => {
+      res[el] = this.$el.style[el]
+      return res
+    }, {})
+  }
+
+  attr (name, value) {
+    if (value) {
+      this.$el.setAttribute(name, value)
+      return this
+    }
+
+    return this.$el.getAttribute(name)
   }
 
   focus () {
