@@ -1,12 +1,38 @@
+import { defaultStyles } from "@/constants";
+import { toInlineStyles } from "@core/utils";
+import { parse } from '@core/parse'
+
 const CODES = {
   A: 65,
   Z: 90
 }
 
-function createRow (index, content) {
+const DEFAULT_WIDTH = 120
+const DEFAULT_HEIGHT = 24
+
+function getWidth (state, index) {
+  return (state[index] || DEFAULT_WIDTH) + 'px'
+}
+
+function getHeight (state, index) {
+  return (state[index] || DEFAULT_HEIGHT) + 'px'
+}
+
+function withWidthFrom(state) {
+  
+  return function(col, index) {
+    const width = getWidth(state.colState, index)
+
+    return {col, index, width}
+  }
+}
+
+function createRow (index, content, state) {
   const resize = index ? '<div class="row-resize" data-resize="row"></div>' : ''
+  const rowHeight = getHeight(state, index)
+
   return `
-    <div class="row" data-type="resizable" data-row="${index}">
+    <div class="row" data-type="resizable" data-row="${index}" style="height: ${rowHeight}">
       <div class="row-info">
         ${index}
         ${resize}
@@ -16,9 +42,9 @@ function createRow (index, content) {
   `
 }
 
-function toColumn (col, index) {
+function toColumn ({col, index, width}) {
   return `
-    <div class="column" data-type="resizable" data-col="${index}" >
+    <div class="column" data-type="resizable" data-col="${index}" style="width: ${width}" >
       ${col}
       <div class="col-resize" data-resize="col"></div>
     </div>
@@ -29,62 +55,46 @@ function toChar (_, index) {
   return String.fromCharCode(CODES.A + index)
 }
 
-// function toCell (rowIndex, index) {
-//   return `<div class="cell" contenteditable="" data-col="${index}" data-row="${rowIndex}" ></div>`
-// }
-
-function toCell (rowIndex) {
+function toCell (rowIndex, state) {
   return function (_, colIndex) {
-    return `<div class="cell" contenteditable="" data-type="cell" data-col="${colIndex}" data-id="${rowIndex}:${colIndex}" ></div>`
+    const id = `${rowIndex}:${colIndex}`
+    const data = state.dataState[id] || ''
+    const width = getWidth(state.colState, colIndex)
+    const initialStyles = toInlineStyles({...defaultStyles, ...state.stylesState[id]})
+
+    return `<div
+              class="cell"
+              contenteditable=""
+              data-type="cell"
+              data-col="${colIndex}"
+              data-id="${id}"
+              data-value="${data || ''}"
+              style="width: ${width}; ${initialStyles}"
+            >
+            ${parse(data)}</div>`
   }
 }
 
-export function createTable (rowsCount = 15) {
-
+export function createTable (rowsCount = 15, state) {
   const rows = []
   const colsCount = 26
   const cols = new Array(colsCount)
                 .fill('')
                 .map(toChar)
+                .map(withWidthFrom(state))
                 .map(toColumn)
                 .join('');
   
-  rows.push(createRow('', cols))
+  rows.push(createRow('', cols, {}))
   
   for(let rowIndex = 0; rowIndex < rowsCount; rowIndex++) {
     const cells = new Array(colsCount)
                     .fill('')
                     // .map((_, colIndex) => toCell(rowIndex, colIndex))
-                    .map(toCell(rowIndex))
+                    .map(toCell(rowIndex, state))
                     .join('')
-    rows.push(createRow(rowIndex + 1, cells))
+    rows.push(createRow(rowIndex + 1, cells, state.rowState))
   }
 
   return rows.join('')
-
-  return `
-      <div class="row">
-        <div class="row-info">
-          1
-        </div>
-
-        <div class="row-data">
-          <div class="cell selected" contenteditable="">A1</div>
-          <div class="cell" contenteditable="">B2</div>
-          <div class="cell" contenteditable="">C3</div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="row-info">
-          2
-        </div>
-
-        <div class="row-data">
-          <div class="cell">A1</div>
-          <div class="cell">B2</div>
-          <div class="cell">C3</div>
-        </div>
-      </div>
-    `
 }
