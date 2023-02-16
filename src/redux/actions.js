@@ -17,3 +17,7 @@ export function applyStyle (data) {
 export function changeTitle (data) {
   return {type: 'CHANGE_TITLE', data}
 }
+
+export function updateDate () {
+  return {type: 'UPDATE_DATE'}
+}
