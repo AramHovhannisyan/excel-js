@@ -1,5 +1,5 @@
-import { storage } from "@core/utils"
 import { defaultStyles, defaultTitle } from "@/constants";
+import { clone } from "@core/utils";
 
 const defaultState = {
   colState: {},
@@ -8,7 +8,16 @@ const defaultState = {
   stylesState: {},
   currentText: '',
   currentStyles: defaultStyles,
-  title: defaultTitle || 'Default Title'
+  title: defaultTitle || 'Default Title',
+  dateOpened: new Date().toJSON()
 }
 
-export const initialState = storage('excel-state') ? storage('excel-state') : defaultState
+const normalize = state => ({
+  ...state,
+  currentText: '',
+  currentStyles: defaultStyles,
+})
+
+export function normalizeInitialState (state) {
+  return state ? normalize(state) : clone(defaultState)
+}

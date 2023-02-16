@@ -1,4 +1,4 @@
-import { TABLE_RESIZE, CHANGE_TEXT, CHANGE_STYLES, APPLY_STYLE, CHANGE_TITLE } from "./types"
+import { TABLE_RESIZE, CHANGE_TEXT, CHANGE_STYLES, APPLY_STYLE, CHANGE_TITLE, UPDATE_DATE } from "./types"
 
 export function rootReducer(state, action) {
   let field
@@ -32,6 +32,10 @@ export function rootReducer(state, action) {
     case CHANGE_TITLE:
       field = 'title'
       return {...state, [field]: action.data}
+
+    case UPDATE_DATE:
+      field = 'dateOpened'
+      return {...state, [field]: new Date().toJSON()}
     default: return state
   }
 }
