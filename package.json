@@ -7,7 +7,9 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server --open",
     "build": "cross-env NODE_ENV=production webpack-dev-server --mode production",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -23,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/AramHovhannisyan/excel-js/issues"
   },
-  "homepage": "https://github.com/AramHovhannisyan/excel-js#readme",
+  "homepage": "https://github.com/AramHovhannisyan/excel-js",
   "browserslist": "> 0.25%, not dead",
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -34,6 +36,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.3",
+    "gh-pages": "^5.0.0",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^29.4.3",
     "jest-environment-jsdom": "^29.4.3",
