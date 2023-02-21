@@ -14,17 +14,24 @@ function storageName (param) {
 }
 
 export class ExcelPage extends Page {
+
+  constructor (param) {
+    super(param)
+
+    this.storeSub = null
+  }
+
   getRoot () {
     const params = this.params || Date.now().toString()
     const state = storage(storageName(params))
     const store = createStore(rootReducer, normalizeInitialState(state))
 
-    const storeListener = state => {
+    const storeListener = debounce(state => {
       storage(storageName(params), state)
       // console.log('App State:', state);
-    }
+    })
 
-    store.subscribe(debounce(storeListener, 300))
+    this.storeSub = store.subscribe(storeListener, 300)
 
     this.excel = new Excel({
       components: [Header, Toolbar, Formula, Table],
@@ -40,5 +47,6 @@ export class ExcelPage extends Page {
 
   destroy () {
     this.excel.destroy()
+    this.storeSub.unsubscribe()
   }
 }
