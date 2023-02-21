@@ -11,13 +11,16 @@ const filename = ext => isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`
 
 console.log('isProd:', isProd);
 
+const outputPath = path.resolve(__dirname, 'dist')
+console.log('outputPath', outputPath, `${__dirname}/dist`)
+
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
   entry: './index.js',
   output: {
     filename: filename('js'),
-    path: path.resolve(__dirname, 'dist')
+    path: outputPath
   },
   resolve: {
     extensions: ['.js'],

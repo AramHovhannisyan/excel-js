@@ -5,7 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --open",
-    "build": "cross-env NODE_ENV=production webpack-dev-server --mode production",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
     "test": "jest",
     "test:watch": "jest --watch",
     "predeploy": "npm run build",
